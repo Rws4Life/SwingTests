@@ -8,6 +8,7 @@ import javax.swing.*;
 public class RandomGame extends JFrame {
 	
 	private int wonGames;
+	private int randomNumber, chosenNumber, upperLimit;
 	
 	private JMenuBar menuBar;
 	private JMenu file;
@@ -15,9 +16,9 @@ public class RandomGame extends JFrame {
 	private JMenuItem load;
 	private JMenuItem exit;
 	
-	
-	private int randomNumber, chosenNumber;
-	private JButton button;
+	private JButton buttonPlay;
+	private JButton setUpperLimitButton;
+	private JTextField upperLimitTextField;
 	private JTextField textField;
 	private JLabel promptLabel;
 	private JLabel resultLabel;
@@ -39,14 +40,17 @@ public class RandomGame extends JFrame {
 	}
 	
 	public void setGameGUI(){
-		promptLabel = new JLabel("Enter a number between 1 and 10");
+		upperLimitTextField = new JTextField(5);
+		add(upperLimitTextField);
+		setUpperLimitButton = new JButton("Set upper Limit!");
+		add(setUpperLimitButton);
+		
+		promptLabel = new JLabel("");
 		add(promptLabel);
 		
 		textField = new JTextField(5);
-		add(textField);
 		
-		button = new JButton("Guess!");
-		add(button);
+		buttonPlay = new JButton("Guess!");
 		
 		resultLabel = new JLabel("");
 		add(resultLabel);
@@ -59,26 +63,66 @@ public class RandomGame extends JFrame {
 		setLayout(new FlowLayout());
 		setMenu();
 		setGameGUI();
-		playGame e = new playGame();
-		button.addActionListener(e);
+		
+		setUpperLimit s = new setUpperLimit();
+		setUpperLimitButton.addActionListener(s);
+		
+	}
+	
+	public class exitGame implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			System.exit(0);
+		}
+	}
+	
+	public class loadGame implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			
+		}
+	}
+	
+	public class saveGame implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			
+		}
+	}
+	
+	public class setUpperLimit implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			upperLimit = (int)(Double.parseDouble(upperLimitTextField.getText()));
+			promptLabel.setText("Enter a number between 1 and " + upperLimit);
+			
+			
+			add(textField);
+			
+			
+			add(buttonPlay);
+			
+			playGame e2 = new playGame();
+			buttonPlay.addActionListener(e2);
+		}
 	}
 	
 	
 	public class playGame implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			
-			randomNumber = (int)(Math.random() * 10 + 1);
+			randomNumber = (int)(Math.random() * upperLimit + 1);
 			
 			try{
 				chosenNumber = (int)(Double.parseDouble(textField.getText()));
 				
-				if(chosenNumber == randomNumber){
+				if(chosenNumber > upperLimit || chosenNumber < 0){
+					resultLabel.setText("Please enter a number between 0 and " + upperLimit);
+					randomLabel.setText("");
+				}
+				else if(chosenNumber == randomNumber){
 					resultLabel.setText("You won the game!");
+					randomLabel.setText("The random number was: " + randomNumber);
 				}
 				else if(chosenNumber != randomNumber){
 					resultLabel.setText("You lost!");
+					randomLabel.setText("The random number was: " + randomNumber);
 				}
-				randomLabel.setText("The random number was: " + randomNumber);
 			}
 			catch (Exception ex){
 				randomLabel.setText("Please enter numbers only!");
